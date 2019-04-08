@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Security System</title>
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<style type="text/css">
+		body{
+			background-color: grey;
+
+		}
+		img{
+			margin-right:50px;
+		}
+		h1{
+			text-align:center;
+		}
+		form{
+			text-align:center;
+		}
+		h3{
+			display: inline-block;
+			margin-left:20px;
+			margin-right:20px;
+		}
+		div{
+			width:30%;
+			display:inline-block;
+		}
+
+		input{
+			width:75% !important;
+
+		}
+
+
+
+
+	</style>
+</head>
+<body>
+	<h1> ECE 369 Home Camera Network </h1>
+
+	<img src="https://www.remoteutilities.com/images/blog/computer-network.jpg" width="30%">
+	
+	<img src="https://www.remoteutilities.com/images/blog/computer-network.jpg" width= "30%">
+	<img src="https://www.remoteutilities.com/images/blog/computer-network.jpg" width="30%">
+	<br>
+	<br>
+	<form>
+		<div id="frame">
+			<h3>FPS</h3>
+			<input type="fps" name="fps" class="form-control" align="middle">
+		</div>
+		<div id="res">
+			<h3>Resolution</h3>
+			<input type="res" name="res" class="form-control" align="middle">
+		</div>
+		<div id="brightness">
+			<h3>Brightness</h3>
+			<input type="brightness" name="brightness" class="form-control" align="middle">
+		</div>
+		<button class="btn btn-info"> Update</button>
+		
+		<br>
+	
+		
+		<br>
+
+
+
+	</form>
+
+	<script type="text/javascript">
+			var imgHandle = document.querySelectorAll("img")[1].addEventListener("click",toggleState);
+			var imgHandleTwo = document.querySelectorAll("img")[0].addEventListener("click",toggleStateTwo);
+			var imgHandleThree = document.querySelectorAll("img")[2].addEventListener("click",toggleStateThree);
+			document.querySelector("body").addEventListener("keypress",returnState);
+			function toggleState(){
+				var img1= document.querySelectorAll("img")[0];
+				var img2 = document.querySelectorAll("img")[2];
+				img1.style.visibility="hidden";
+				img1.style.width = "20%"
+				img1.style.height = "20%"
+				img2.style.visibility="hidden";
+				img2.style.width = "20%"
+				img2.style.height = "20%"
+
+				var imgHandle = document.querySelectorAll("img")[1];
+				imgHandle.style.width = "50%";
+				imgHandle.style.height = "50%";
+				
+
+			}
+
+			function toggleStateTwo(){
+				var img1 = document.querySelectorAll("img")[1];
+				var img2 = document.querySelectorAll("img")[2];
+				img1.style.visibility="hidden";
+				img1.style.width = "0%"
+				img1.style.height = "0%"
+				img2.style.visibility="hidden";
+				img2.style.width = "0%"
+				img2.style.height = "0%"
+				var imgHandle = document.querySelectorAll("img")[0];
+				imgHandle.style.marginLeft = "30%";
+				imgHandle.style.width = "50%";
+				imgHandle.style.height = "50%";
+
+
+			}
+			function toggleStateThree(){
+				var img1 = document.querySelectorAll("img")[0];
+				var img2 = document.querySelectorAll("img")[1];
+				img1.style.visibility="hidden";
+				img1.style.width = "0%";
+				img1.style.height = "0%";
+				img2.style.visibility="hidden";
+				img2.style.width = "0%";
+				img2.style.height = "0%";
+				var imgHandle = document.querySelectorAll("img")[2];
+				imgHandle.style.marginRight = "20%";
+				imgHandle.style.marginLeft = "20%";
+				imgHandle.style.width = "50%";
+				imgHandle.style.height = "50%";
+			}
+
+			function returnState(e){
+					if(e.code == "Space"){
+						
+						imgs = document.querySelectorAll("img");
+						for(var x=0; x<imgs.length ; ++x){
+							imgs[x].style.visibility ="visible";
+							imgs[x].style.visibility = "visible";
+							imgs[x].style.marginRight = "50px";
+							imgs[x].style.width = "30%";
+						}
+					}
+			}
+	</script>
+</body>
+</html>
