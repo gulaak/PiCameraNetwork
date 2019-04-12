@@ -40,9 +40,10 @@
 <body>
 	<h1> ECE 369 Home Camera Network </h1>
 
-	<img src="https://www.remoteutilities.com/images/blog/computer-network.jpg" width="30%">
 	
-	<img src="https://www.remoteutilities.com/images/blog/computer-network.jpg" width= "30%">
+	
+	<img src="{{url_for('live_feed')}}" width= "30%">
+	<img src="https://www.remoteutilities.com/images/blog/computer-network.jpg" width="30%">
 	<img src="https://www.remoteutilities.com/images/blog/computer-network.jpg" width="30%">
 	<br>
 	<br>
@@ -71,9 +72,30 @@
 	</form>
 
 	<script type="text/javascript">
+			let curr = 0
 			var imgHandle = document.querySelectorAll("img")[1].addEventListener("click",toggleState);
 			var imgHandleTwo = document.querySelectorAll("img")[0].addEventListener("click",toggleStateTwo);
 			var imgHandleThree = document.querySelectorAll("img")[2].addEventListener("click",toggleStateThree);
+			var selectorHandler = document.querySelector("body").addEventListener("keypress",feedSelector);
+			
+			function feedSelector(e){
+				++curr;
+				if(curr > 1){
+					curr = 0
+				}
+
+				if(e.code == "Space"){
+					var xhttp = new XMLHttpRequest();
+					xhttp.open("POST","switch",true)
+					xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+					const data = new FormData()
+					data.append('selector',curr);
+					xhttp.send(data)
+					
+				}
+			
+			
+			}
 			document.querySelector("body").addEventListener("keypress",returnState);
 			function toggleState(){
 				var img1= document.querySelectorAll("img")[0];
