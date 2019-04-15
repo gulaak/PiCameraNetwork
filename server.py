@@ -1,6 +1,7 @@
 from flask import Flask,render_template,Response
 from flask import request
-from camera import Camera
+import json
+# from camera import Camera
 import socket
 import struct
 import io
@@ -10,7 +11,10 @@ app = Flask(__name__)
 
 selector = 0
 
-
+fps =None
+res = None
+brightness = None
+settingChange = None
 
 
 
@@ -20,6 +24,7 @@ selector = 0
 def hello():
     return render_template('home.html')
 	
+ 
 	
 @app.route("/switch",methods = ['POST'])
 def videoFeedSwitch():
@@ -29,14 +34,24 @@ def videoFeedSwitch():
 	if(selector > 1):
 		selector = 0
 	print(selector)
-	return "OK"
+	return json.dumps("OK")
+	
+@app.route("/api",methods=['POST'])
+def getSettings():
+	data = request.get_json()
+	fps = data['fps']
+	res = data['res']
+	brightness = data['brightness']
+	
+	return json.dumps({'OK':200})
 	
 	
-def generatorTwo():
-	while True:
+	
+# def generatorTwo():
+# 	while True:
 		
-		yield (b'--frame\r\n'
-				   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+# 		yield (b'--frame\r\n'
+# 				   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
 def getImage(connection):
@@ -50,14 +65,20 @@ def getImage(connection):
 #			   b'Content-Type: image/jpeg\r\n\r\n' + image_stream.read() + b'\r\n')
 
 def generator(camera):
-	server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	server_socket.bind(('0.0.0.0',10000))
-	server_socket.listen(0)
-	connection = server_socket.accept()[0].makefile('rb')
+	clientOneSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	clientTwoSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+	clientOneSocket.bind(('0.0.0.0',10000))
+	clientTwoSocket.bind(('0.0.0.0',10001))
+	clientOneSocket.listen(0)
+	clientTwoSocket.listen(0)
+	connectionOne = clientOneSocket.accept()[0].makefile('rb')
+	connectionTwo = clientTwoSocket.accept()[0].makefile('rb')
 	x = time.time()
 	while True:
 		if(selector):
-			frame = getImage(connection)
+			frame = getImage(connectionOne)
+		elif(selector == 2):
+			frame = getImage(connectionTwo)
 		else:
 			frame = camera.get_frame()
 		yield (b'--frame\r\n'
@@ -77,18 +98,10 @@ def generator(camera):
 
 
 
-@app.route('/live_feedTwo')
-def live_feedTwo():
-	return Response(generatorTwo(), mimetype= 'multipart/x-mixed-replace; boundary =frame')
-
 @app.route('/live_feed')
 def live_feed():
     return Response(generator(Camera()),mimetype='multipart/x-mixed-replace; boundary=frame')
-
-    
-    
-
-    
+ 
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0',port=5000,debug=True,threaded=True,use_reloader=False)

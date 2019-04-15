@@ -1,0 +1,42 @@
+body{
+	background-color: grey;
+
+}
+img{
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	width:50%;
+}
+		
+h1{
+	text-align:center;
+}
+form{
+	text-align:center;
+}
+h3{
+	display: inline-block;
+	margin-left:20px;
+	margin-right:20px;
+}
+div{
+	width:30%;
+	display:inline-block;
+}
+input{
+	width:75% !important;
+}
+
+.circle{
+    display:inline-block;
+	margin: 0 auto;
+	width:10px;
+	height:10px;
+	border-radius:50%;
+	background-color:white;
+}
+
+.container-fluid{
+	text-align:center;
+}
