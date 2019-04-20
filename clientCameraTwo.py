@@ -10,7 +10,7 @@ import numpy
 import math
 
 client_socket = None
-address = ('10.0.0.11',10001)
+address = ('134.88.49.176',10001)
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 connection = client_socket.makefile('wb')
 client_socket.connect(address)
@@ -35,12 +35,15 @@ with picamera.PiCamera() as camera:
 		stream.seek(0)
 		stream.truncate()
 		resp = str(client_socket.recv(1024)).split('-')
-		if len(resp) == 3:
-			camera.framerate = int(resp[0])
-			res = resp[1].split('x')
-			camera.resolution = (int(res[0]),int(res[1]))
-			camera.brightness = int(resp[2])
-connection.write(struct.pack('<L',0))
+		try:
+			if len(resp) == 3:
+				camera.framerate = int(resp[0])
+				res = resp[1].split('x')
+				camera.resolution = (int(res[0]),int(res[1]))
+				camera.brightness = int(resp[2])
+				connection.write(struct.pack('<L',0))
+		except:
+			continue
 
 #finally:
 #	connection.close()

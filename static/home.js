@@ -32,7 +32,7 @@
 
 				if(e.code == "Space"){
 					++curr;
-					if(curr > 1){
+					if(curr > 2){
 						curr = 0;
 					}
 					var xhttp = new XMLHttpRequest();

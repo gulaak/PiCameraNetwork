@@ -2,7 +2,7 @@ import time
 import io
 import threading
 import picamera
-
+#Courtesy of Miguel Grinberg
 
 class Camera(object):
     thread = None  # background thread that reads frames from camera

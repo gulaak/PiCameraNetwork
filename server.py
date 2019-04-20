@@ -1,7 +1,7 @@
 from flask import Flask,render_template,Response
 from flask import request
 import json
-# from camera import Camera
+from camera import Camera
 import socket
 import struct
 import io
@@ -31,7 +31,7 @@ def videoFeedSwitch():
 	global selector
 	selector +=1
 	
-	if(selector > 1):
+	if(selector > 2):
 		selector = 0
 	print(selector)
 	return json.dumps("OK")
@@ -70,24 +70,24 @@ def generator(camera):
 	clientTwoSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 	clientOneSocket.bind(('0.0.0.0',10000))
 	clientTwoSocket.bind(('0.0.0.0',10001))
-	clientOneSocket.listen(0)
-	clientTwoSocket.listen(0)
+	clientOneSocket.listen(2)
+	clientTwoSocket.listen(2)
 	connectionOne = clientOneSocket.accept()[0].makefile('rb')
 	connectionTwo = clientTwoSocket.accept()[0].makefile('rb')
 	x = time.time()
 	while True:
-		if(selector):
-			frame = getImage(connectionOne)
+		if(selector == 1):
+			frame = getImage(connectionTwo)
 			if(settingChange):
 				clientOneSocket.send((fps + '-' + res + '-' + brightness).encode())
 			else:
-				clientOneSocket.send('None'.encode())
+			 	clientOneSocket.send(bytes("1",'ascii'))
 		elif(selector == 2):
-			frame = getImage(connectionTwo)
+			frame = getImage(connectionOne)
 			if(settingChange):
-				clientTwoSocket.send((fps + '-' + res + '-' + brightness).encode())
+			 	clientTwoSocket.send((fps + '-' + res + '-' + brightness).encode())
 			else:
-				clientTwoSocket.send('None'.encode())
+			 	clientTwoSocket.send(bytes("1","ascii"))
 		else:
 			frame = camera.get_frame()
 			if(settingChange):
