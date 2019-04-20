@@ -31,9 +31,28 @@
 
 
 				if(e.code == "Space"){
+					
 					++curr;
 					if(curr > 2){
 						curr = 0;
+					}
+					
+					var divs = document.querySelectorAll(".circle");
+					divs[curr].style.backgroundColor = "red";
+					if(curr === 0){
+						divs[1].style.backgroundColor = "white";
+						divs[2].style.backgroundColor = "white";
+						
+					}
+					else if(curr === 1){
+						divs[0].style.backgroundColor = "white";
+						divs[2].style.backgroundColor = "white";
+					}
+					else if(curr === 2){
+						divs[0].style.backgroundColor = "white";
+						divs[1].style.backgroundColor = "white";
+						divs[2].style.backgroundColor = "red";
+						
 					}
 					var xhttp = new XMLHttpRequest();
 					xhttp.open("POST","switch",true)
@@ -41,22 +60,6 @@
 					const data = new FormData();
 					data.append('selector',curr);
 					xhttp.send(data);
-					var divs = document.querySelectorAll(".circle");
-					divs[curr].style.backgroundColor = "red";
-					if(curr == 0){
-						divs[1].style.backgroundColor = "white";
-						divs[2].style.backgroundColor = "white";
-						
-					}
-					else if(curr == 1){
-						divs[0].style.backgroundColor = "white";
-						divs[2].style.backgroundColor = "white";
-					}
-					else{
-						divs[0].style.backgroundColor = "white";
-						divs[1].style.backgroundColor = "white";
-						
-					}
 										
 				}
 			

@@ -14,7 +14,7 @@ selector = 0
 fps =None
 res = None
 brightness = None
-settingChange = None
+settingChange = False
 
 
 
@@ -38,6 +38,7 @@ def videoFeedSwitch():
 	
 @app.route("/api",methods=['POST'])
 def getSettings():
+	global settingChange
 	data = request.get_json()
 	fps = data['fps']
 	res = data['res']
@@ -66,37 +67,63 @@ def getImage(connection):
 #			   b'Content-Type: image/jpeg\r\n\r\n' + image_stream.read() + b'\r\n')
 
 def generator(camera):
+	global settingChange
 	clientOneSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	clientTwoSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+	clientThreeSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+	clientFourSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 	clientOneSocket.bind(('0.0.0.0',10000))
 	clientTwoSocket.bind(('0.0.0.0',10001))
+	clientThreeSocket.bind(('0.0.0.0',10002))
+	clientFourSocket.bind(('0.0.0.0',10003))
+	
 	clientOneSocket.listen(2)
 	clientTwoSocket.listen(2)
+	clientThreeSocket.listen(2)
+	clientFourSocket.listen(2)
 	connectionOne = clientOneSocket.accept()[0].makefile('rb')
+	connectionThree= clientThreeSocket.accept()[0]
 	connectionTwo = clientTwoSocket.accept()[0].makefile('rb')
-	x = time.time()
-	while True:
-		if(selector == 1):
-			frame = getImage(connectionTwo)
-			if(settingChange):
-				clientOneSocket.send((fps + '-' + res + '-' + brightness).encode())
+	connectionFour  = clientFourSocket.accept()[0]
+
+	try:
+		while True:
+			if(selector == 1):
+				frame = getImage(connectionTwo)
+
+			elif(selector == 2):
+				frame = getImage(connectionOne)
+
 			else:
-			 	clientOneSocket.send(bytes("1",'ascii'))
-		elif(selector == 2):
-			frame = getImage(connectionOne)
+				frame = camera.get_frame()
+				if(settingChange):
+					camera.framerate = int(fps)
+					temp = res.split('x')
+					camera.resolution = (int(temp[0]),int(temp[1]))
+					camera.brightness = int(brightness)
+
 			if(settingChange):
-			 	clientTwoSocket.send((fps + '-' + res + '-' + brightness).encode())
+				settingChange = False
+				if(selector):
+					connectionThree.send((fps + '-' + res + '-' + brightness).encode())
+					
+				else:
+					connectionFour.sned((fps + '-' + res + '-' + brightness).encode())
+					
 			else:
-			 	clientTwoSocket.send(bytes("1","ascii"))
-		else:
-			frame = camera.get_frame()
-			if(settingChange):
-				camera.framerate = int(fps)
-				temp = res.split('x')
-				camera.resolution = (int(temp[0]),int(temp[1]))
-				camera.brightness = int(brightness)
-		yield (b'--frame\r\n'
+				if(selector):
+					connectionThree.send(b'1')
+		
+				elif(selector==2):
+					connectionFour.send(b'1')
+			
+			yield (b'--frame\r\n'
 				   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+	finally:
+		clientOneSocket.close()
+		clientTwoSocket.close()
+		connectionOne.close()
+		connectionTwo.close()
 
 # def generatorThree():
 # 	server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
