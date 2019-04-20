@@ -34,6 +34,15 @@ with picamera.PiCamera() as camera:
 		connection.write(stream.read())
 		stream.seek(0)
 		stream.truncate()
+		resp = str(client_socket.recv(1024)).split('-')
+		if len(resp) == 3:
+			camera.framerate = resp[0]
+			camera.resolution = tuple(resp[1].split('x'))
+			camera.brightness = resp[2]
+
+
+
+		
 connection.write(struct.pack('<L',0))
 
 #finally:

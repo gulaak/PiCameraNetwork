@@ -42,6 +42,7 @@ def getSettings():
 	fps = data['fps']
 	res = data['res']
 	brightness = data['brightness']
+	settingChange = True
 	
 	return json.dumps({'OK':200})
 	
@@ -77,10 +78,23 @@ def generator(camera):
 	while True:
 		if(selector):
 			frame = getImage(connectionOne)
+			if(settingChange):
+				clientOneSocket.send((fps + '-' + res + '-' + brightness).encode())
+			else:
+				clientOneSocket.send('None'.encode())
 		elif(selector == 2):
 			frame = getImage(connectionTwo)
+			if(settingChange):
+				clientTwoSocket.send((fps + '-' + res + '-' + brightness).encode())
+			else:
+				clientTwoSocket.send('None'.encode())
 		else:
 			frame = camera.get_frame()
+			if(settingChange):
+				camera.framerate = int(fps)
+				temp = res.split('x')
+				camera.resolution = (int(temp[0]),int(temp[1]))
+				camera.brightness = int(brightness)
 		yield (b'--frame\r\n'
 				   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
