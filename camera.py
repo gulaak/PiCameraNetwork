@@ -8,11 +8,19 @@ class Camera(object):
     thread = None  # background thread that reads frames from camera
     frame = None  # current frame is stored here by background thread
     last_access = 0  # time of last client access to the camera
+    frames = None
+    res = None
+    brightness = None
+	
+    def __init__(self,framerate=24,resolution=(320,240),brightness=50):
+        Camera.frames = framerate
+        Camera.res = resolution
+        Camera.brightness = brightness
 
     def initialize(self):
         if Camera.thread is None:
             # start background frame thread
-            Camera.thread = threading.Thread(target=self._thread)
+            Camera.thread = threading.Thread(target=self._thread,args=(Camera.frames,Camera.res,Camera.brightness))
             Camera.thread.start()
 
             # wait until frames start to be available
@@ -25,10 +33,13 @@ class Camera(object):
         return self.frame
 
     @classmethod
-    def _thread(cls):
+    def _thread(cls,fps,res,bright):
         with picamera.PiCamera() as camera:
             # camera setup
-            camera.resolution = (320, 240)
+            global framerate
+            camera.resolution = res
+            camera.framerate = fps
+            camera.brightness = bright
             camera.hflip = True
             camera.vflip = True
 

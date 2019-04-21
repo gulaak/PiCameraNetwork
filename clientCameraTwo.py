@@ -11,12 +11,12 @@ import math
 
 client_socket = None
 address = ('134.88.49.176',10001)
-addressTwo = ('134.88.49.176',10003)
+
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-client_socketTwo = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
 connection = client_socket.makefile('wb')
 client_socket.connect(address)
-client_socketTwo.connect(addressTwo)
+
 
 try:
 	with picamera.PiCamera() as camera:
@@ -38,7 +38,7 @@ try:
 			connection.write(stream.read())
 			stream.seek(0)
 			stream.truncate()
-			resp = client_socketTwo.recv(1024)
+			
 
 			# if len(resp) == 3:
 			# 	camera.framerate = int(resp[0])

@@ -9,6 +9,9 @@ import time
 import random
 app = Flask(__name__)
 
+
+
+
 selector = 0
 
 fps =None
@@ -39,11 +42,18 @@ def videoFeedSwitch():
 @app.route("/api",methods=['POST'])
 def getSettings():
 	global settingChange
+	global fps
+	global res
+	global brightness
 	data = request.get_json()
 	fps = data['fps']
+	
 	res = data['res']
+	
 	brightness = data['brightness']
+	
 	settingChange = True
+
 	
 	return json.dumps({'OK':200})
 	
@@ -68,23 +78,23 @@ def getImage(connection):
 
 def generator(camera):
 	global settingChange
+	global fps
+	global brightness
+	global res
 	clientOneSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	clientTwoSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-	clientThreeSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-	clientFourSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
 	clientOneSocket.bind(('0.0.0.0',10000))
 	clientTwoSocket.bind(('0.0.0.0',10001))
-	clientThreeSocket.bind(('0.0.0.0',10002))
-	clientFourSocket.bind(('0.0.0.0',10003))
+
 	
 	clientOneSocket.listen(2)
 	clientTwoSocket.listen(2)
-	clientThreeSocket.listen(2)
-	clientFourSocket.listen(2)
+	
 	connectionOne = clientOneSocket.accept()[0].makefile('rb')
-	connectionThree= clientThreeSocket.accept()[0]
+
 	connectionTwo = clientTwoSocket.accept()[0].makefile('rb')
-	connectionFour  = clientFourSocket.accept()[0]
+	
 
 	try:
 		while True:
@@ -97,25 +107,10 @@ def generator(camera):
 			else:
 				frame = camera.get_frame()
 				if(settingChange):
-					camera.framerate = int(fps)
 					temp = res.split('x')
-					camera.resolution = (int(temp[0]),int(temp[1]))
-					camera.brightness = int(brightness)
-
-			if(settingChange):
-				settingChange = False
-				if(selector):
-					connectionThree.send((fps + '-' + res + '-' + brightness).encode())
-					
-				else:
-					connectionFour.sned((fps + '-' + res + '-' + brightness).encode())
-					
-			else:
-				if(selector):
-					connectionThree.send(b'1')
-		
-				elif(selector==2):
-					connectionFour.send(b'1')
+					print(int(str(fps)),(int(str(temp[0])),int(str(temp[1]))),int(str(brightness)))
+					camera = Camera(int(str(fps)),(int(str(temp[0])),int(str(temp[1]))),int(str(brightness)))
+					settingChange= False
 			
 			yield (b'--frame\r\n'
 				   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
