@@ -2,15 +2,19 @@ import time
 import io
 import threading
 import picamera
+import requests
+
 #Courtesy of Miguel Grinberg
 
 class Camera(object):
     thread = None  # background thread that reads frames from camera
     frame = None  # current frame is stored here by background thread
     last_access = 0  # time of last client access to the camera
+    timerAccess = 0
     frames = None
     res = None
     brightness = None
+    timeOut = True
 	
     def __init__(self,framerate=24,resolution=(320,240),brightness=50):
         Camera.frames = framerate
@@ -34,9 +38,11 @@ class Camera(object):
 
     @classmethod
     def _thread(cls,fps,res,bright):
+        urlGet = "http://134.88.49.135:5000/checkStatus"
+        urlPost = "http://134.88.49.135:5000/changeStatus"
         with picamera.PiCamera() as camera:
             # camera setup
-            global framerate
+			
             camera.resolution = res
             camera.framerate = fps
             camera.brightness = bright
@@ -57,9 +63,25 @@ class Camera(object):
                 # reset stream for next frame
                 stream.seek(0)
                 stream.truncate()
+                if(time.time() - cls.timerAccess >= 4):
+                    timeOut = True
 
-                # if there hasn't been any clients asking for frames in
-                # the last 10 seconds stop the thread
+                if(timeOut == True):
+                    cls.timerAccess = time.time()
+                    timeOut = False
+                    r = requests.get(urlGet)
+                    response = r.json()
+                    if response['status']== True:
+                        try:
+                                camera.framerate = int(response['fps'])
+                                camera.resolution = tuple(response['resolution'])
+                                camera.brightness = int(response['brightness'])
+                                r = requests.post(urlPost)
+                        except picamera.exc.PiCameraMMALError:
+                                continue 
+
+                #if there hasn't been any clients asking for frames in
+                #the last 10 seconds stop the thread
                 if time.time() - cls.last_access > 10:
                     break
         cls.thread = None
