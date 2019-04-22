@@ -7,8 +7,9 @@
 	integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo="
 	crossorigin="anonymous"></script>
 	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='home.css')}}">
-	<style type="text/css">
+	<link rel="stylesheet" type="text/css" href="home.css">
+	<link href="https://fonts.googleapis.com/css?family=Merienda" rel="stylesheet">
+	
 		
 
 
@@ -16,11 +17,13 @@
 	</style>
 </head>
 <body>
-	<h1> ECE 369 Home Camera Network </h1>
-
+	<div class="container-fluid"><h1 style="font-family: 'Merienda',cursive;"> Real-Time Home Monitoring System </h1></div>
+	<br>
+	<br>
 	
 	
     <img src="{{url_for('live_feed')}}" >
+	
 
 
 	<div class="container-fluid">
@@ -31,7 +34,7 @@
 	<br>
 	<div class = "container-fluid">
 		<div id="frame">
-			<h3>FPS</h3>
+			<h3>Frames Per Second</h3>
 			<input type="fps" name="fps" class="form-control" align="middle">
 		</div>
 		<div id="res">
@@ -42,14 +45,14 @@
 			<h3>Brightness</h3>
 			<input type="brightness" name="brightness" class="form-control" align="middle">
 		</div>
-		<button class="btn btn-info"> Update</button>
+		<button class="btn btn-info">Update</button>
 	</div>
 		<br>	
 		<br>
 
 
 	
-		<script type="text/javascript" src = "{{ url_for('static',filename='home.js')}}"></script>
+		<script type="text/javascript" src = "home.js"></script>
 	
 </body>
 </html>

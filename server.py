@@ -64,11 +64,9 @@ def hello():
 @app.route("/switch",methods = ['POST'])
 def videoFeedSwitch():
 	global selector
-	selector +=1
 	
-	if(selector > 2):
-		selector = 0
-	print(selector)
+	selector = request.get_json()['selector']
+	
 	return json.dumps("OK")
 	
 	

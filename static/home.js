@@ -2,6 +2,66 @@
 			document.querySelector("img").addEventListener("click",toggleState);
 			document.querySelector("button").addEventListener("click",parser);
 			document.querySelector("body").addEventListener("keypress",feedSelector);
+			mydivs = document.querySelectorAll(".circle")
+			mydivs[0].addEventListener("click",firstFeed);
+			mydivs[1].addEventListener("click",secondFeed);
+			mydivs[2].addEventListener("click",thirdFeed);
+			
+			function firstFeed(){
+				curr = 0
+				$.ajax({
+					url: '/switch',
+					contentType: 'application/json;charset=UTF-8',
+					data: JSON.stringify({'selector':curr}),
+					type: 'POST',
+					sucess: function(response){
+					console.log(response);
+					},
+					error: function(error){
+						console.log(error);
+					}
+				});
+				changeSelectorColor(curr)
+				
+				
+			}
+			function secondFeed(){
+				curr = 1
+				$.ajax({
+					url: '/switch',
+					contentType: 'application/json;charset=UTF-8',
+					data: JSON.stringify({'selector':curr}),
+					type: 'POST',
+					sucess: function(response){
+					console.log(response);
+					},
+					error: function(error){
+						console.log(error);
+					}
+				});
+				changeSelectorColor(curr)
+				
+				
+			}
+			
+			function thirdFeed(){
+				curr = 2
+				$.ajax({
+					url: '/switch',
+					contentType: 'application/json;charset=UTF-8',
+					data: JSON.stringify({'selector':curr}),
+					type: 'POST',
+					sucess: function(response){
+					console.log(response);
+					},
+					error: function(error){
+						console.log(error);
+					}
+				});
+				changeSelectorColor(curr)
+				
+				
+			}
 			
 			function parser(){
 				var inputHandler = document.querySelectorAll("input");
@@ -22,6 +82,7 @@
 						console.log(error);
 					}
 				});
+				changeSelectorColor(curr);
 				
 			
 			}
@@ -37,6 +98,29 @@
 						curr = 0;
 					}
 					
+					$.ajax({
+						url: '/switch',
+						contentType: 'application/json;charset=UTF-8',
+						data: JSON.stringify({'selector':curr}),
+						type: 'POST',
+						sucess: function(response){
+						console.log(response);
+						},
+						error: function(error){
+							console.log(error);
+						}
+					});
+					
+					changeSelectorColor(curr)
+					
+
+										
+				}
+			
+			
+			}
+			
+			function changeSelectorColor(curr){
 					var divs = document.querySelectorAll(".circle");
 					divs[curr].style.backgroundColor = "red";
 					if(curr === 0){
@@ -53,17 +137,9 @@
 						divs[1].style.backgroundColor = "white";
 						divs[2].style.backgroundColor = "red";
 						
-					}
-					var xhttp = new XMLHttpRequest();
-					xhttp.open("POST","switch",true)
-					xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-					const data = new FormData();
-					data.append('selector',curr);
-					xhttp.send(data);
-										
-				}
-			
-			
+					}				
+				
+				
 			}
 
 			function toggleState(){
