@@ -4,7 +4,7 @@ import threading
 import picamera
 import requests
 
-#Courtesy of Miguel Grinberg
+#Modification of Miguel Grinberg piCamera libray
 
 class Camera(object):
     thread = None  # background thread that reads frames from camera

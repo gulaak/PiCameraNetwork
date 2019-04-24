@@ -10,7 +10,7 @@ import numpy
 import math
 
 client_socket = None
-address = ('134.88.49.176',10001)
+address = ('134.88.49.135',10001)
 
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
@@ -21,6 +21,8 @@ client_socket.connect(address)
 try:
 	with picamera.PiCamera() as camera:
 		camera.resolution = (320, 240)
+		camera.hflip = True
+		camera.vflip = True
 		# Start a preview and let the camera warm up for 2 seconds
 		camera.start_preview()
 		time.sleep(2)

@@ -6,7 +6,7 @@ import struct
 import socket
 import requests
 import cv2
-#Courtesy of Miguel Grinberg
+#Modification of Miguel Grinbergs piCamera library to handle threaded TCP socket streaming of real time video 
 
 class Camera(object):
     thread = None  # background thread that reads frames from camera
